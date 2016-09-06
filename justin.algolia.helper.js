@@ -24,11 +24,18 @@
 
         var query = '';
 
-        function buildHelpers() {
+        debug == true && console.log('client->');
+        debug == true && console.log(client);
+
+        function buildHelpers() {            
+
             for (var key in indices) {
                 var tmp_helper = algoliasearchHelper(client, indices[key].indexName, {
                     hitsPerPage: indices[key].hitsPerPage
                 });
+
+                debug == true && console.log('key, indicies[key]->');
+                debug == true && console.log(key, indices[key]);
 
                 helpers[key] = {
                     helper: tmp_helper,
@@ -42,6 +49,7 @@
                     helperResultsFunc[index] = (function (index){
                         helpers[index].helper.on('result', function (content) {
 
+                            debug == true && console.log('content->');
                             debug == true && console.log(content);
                             
                             renderHits(content, helpers[index], index);
@@ -56,7 +64,15 @@
 
                 var $results = $(theHelper.container + ' .hits');
                 //var html = $(theHelper.hittemplate.render(data));
+
+                console.log(theHelper.hittemplate);
                 var html = $('<textarea/>').html(theHelper.hittemplate.render(data)).text();
+
+                debug == true && console.log('$results->');
+                debug == true && console.log($results);
+                
+                debug == true && console.log('html->');
+                debug == true && console.log(html);
                 
                 if(smoothLoad) {
                     $results.animate({opacity: 0}, 150, function() {
