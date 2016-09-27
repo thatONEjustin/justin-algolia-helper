@@ -1,6 +1,10 @@
 // Justin's Fancy Schmancy Algolia Plugin 
 // Version: 1.0.0
-// Using - A boilerplate for jumpstarting jQuery plugins development by Stefan Gabos version 1.1, May 14th, 2011 
+// Using - A boilerplate for jumpstarting jQuery plugins development by Stefan Gabos version 1.1, May 14th, 2011
+
+
+
+//@TODO: There is a bug with how the results list works. Currently it outputs on the results per search. This will get super unoptimized. 
 (function($) {
 
     // here we go!
@@ -17,9 +21,7 @@
             resultsId: '.hits',
             displaySpeed: 150,
             searchForm: '.search'
-        }
-
-        
+        }        
 
         // to avoid confusions, use "plugin" to reference the 
         // current instance of the object
@@ -46,7 +48,6 @@
 
         // the "constructor" method that gets called when the object is created
         plugin.init = function() {
-
             // the plugin's final properties are the merged default and 
             // user-provided options (if any)
             plugin.settings = $.extend({}, defaults, options);
@@ -86,13 +87,16 @@
                 //If the user DID input these two required fields, then assign the ID/Key to the client 
                 //and build helpers
                 plugin.settings.client = algoliasearch(plugin.settings.appID, plugin.settings.apiKey);
+
+                //console.log(plugin.settings);
                 
                 buildHelpers();
-                buildSearchResults();
+                //buildSearchResults();
             }
 
             // code goes here
             if(plugin.settings.debug) {
+
                 $input = $('#q');
 
                 $input.bind('keyup paste', searchIndices);
@@ -105,14 +109,20 @@
 
             for(var key in plugin.settings.indexes) {
 
+                //console.log(key);
+
                 var tmp_helper = algoliasearchHelper(plugin.settings.client, plugin.settings.indexes[key].indexName, {
                     hitsPerPage: plugin.settings.indexes[key].hitsPerPage
                 });
+
+                //console.log(plugin.settings.indexes[key].hittemplate);
 
                 plugin.settings.helpers[key] = {
                     helper: tmp_helper,
                     hittemplate : plugin.settings.indexes[key].hittemplate
                 }
+
+                //console.log(plugin.settings.helpers);
             }
 
             for (var index in plugin.settings.helpers) {
@@ -121,6 +131,8 @@
 
                     try {
                         plugin.settings.helpers[index].helper.on('result', function (content) {     
+
+                            //console.log(content);
 
                             renderHits(content, plugin.settings.helpers[index], index);
 
@@ -139,6 +151,8 @@
 
                 //Where to display all resulting hits. 
                 var $results = $element.find(plugin.settings.resultsId);
+
+                //console.log($results[0].parentElement);
 
                 //If HTML entities exist, this should convert them to the proper text for the browser to render
                 var html = $('<textarea/>').html(theHelper.hittemplate.render(data)).text();
@@ -189,6 +203,7 @@
 
                 default:
                     //console.log('default');
+                    //console.log(query);
                     for(var index in plugin.settings.helpers) {
                         plugin.settings.helpers[index].helper.setQuery(query).search();
                     }
