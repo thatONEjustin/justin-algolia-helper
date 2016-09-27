@@ -36,9 +36,9 @@
         <div class="col-xs-12 col-sm-4 offset-sm-4">
           <form>
             <div class="form-group">
-              <label for="exampleSimpleSearch"><strong>Seach:</strong></label>
-              <input type="email" class="form-control" id="exampleSimpleSearch">
-              <small id="emailHelp" class="form-text text-muted">Just start typing to view your results</small>
+              <label for="q"><strong>Seach:</strong></label>
+              <input type="email" class="form-control" id="q">
+              <small id="qHelp" class="form-text text-muted">Just start typing to view your results</small>
             </div>
           </form>
         </div>
@@ -64,37 +64,32 @@
     <script src="//cdn.jsdelivr.net/hogan.js/3.0.2/hogan.min.common.js"></script>
     
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
-    
-    <script src="../js/justin.algolia.helper.js"></script>
+
+    <script src="js/justin.algolia.helper.js"></script>
 
     <!-- Just like instantsearch.js, I like using Hogan Templating to load the results hit. Extensible result function coming soon -->      
-    <script type="text/template" id="classes-template">
+    <script type="text/template" id="doj-template">
     {{#hits}}
         <div class="col-xs-12">
-            <div class="col-xs-12 col-sm-1">
-                <h5><strong> {{ courseNumber }}</strong></h5>
+            <div class="col-xs-12">
+                <h5><strong> {{ contactPoint }}</strong></h5>
             </div>
-            <div class="col-xs-12 col-sm-5">
-                <h5>{{ courseName }}</h5>
-            </div>
-            <div class="col-xs-12 col-sm-2">
-                <p class="price"><strong>${{ price }}</strong></p>
-            </div>  
-            <div class="col-xs-12 col-sm-4">            
-                <a href="class-details.cfm?id={{ courseREF }}" class="btn btn-sm btn-success">Learn More</a>            
+            <div class="col-xs-12">
+                <p>{{ description }}</p>
             </div>
         </div>
     {{/hits}}
     </script>
 
     <script>
-        var classesTemplate = Hogan.compile($('#classes-template').text());
+        var dojTemplate = Hogan.compile($('#doj-template').text());
         var indices = {
-          classes: {
-              indexName: 'allclasses',
+          doj: {
+              indexName: 'dj_emails',
               hitsPerPage: 6,
               //container: $('#classes'),
-              hittemplate: classesTemplate
+              debug: true,
+              hittemplate: dojTemplate
           }
         };
 

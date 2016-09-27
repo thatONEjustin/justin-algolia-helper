@@ -53,7 +53,7 @@
 
             //Check for required appID and apiKey options. 
             setupAlgolia(); 
-            setupFormListeners();
+            //setupFormListeners();
             // init the rest of the plugin features below
 
         }
