@@ -57,49 +57,15 @@
             plugin.settings.index = $element.attr('data-index').split(',');
             plugin.settings.hitsPerPage = Number($element.attr('data-hitsPerPage'));
             plugin.settings.hittemplate = $('#' + $element.attr('data-hittemplate'));
-            //Check for required appID and apiKey options.
-            setupAlgolia();
+
             //setupFormListeners();
             // init the rest of the plugin features below
-
-        }
-
-        // public methods
-        // these methods can be called like:
-        // plugin.methodName(arg1, arg2, ... argn) from inside the plugin or
-        // element.data('FancyAlgolia').publicMethod(arg1, arg2, ... argn) from outside
-        // the plugin, where "element" is the element the plugin is attached to;
-
-        // a public method. for demonstration purposes only - remove it!
-        /*plugin._public_method = function() {
-
-            // code goes here
-
-        }*/
-
-        // private methods
-        // these methods can be called only from inside the plugin like:
-        // methodName(arg1, arg2, ... argn)
-
-        // a private method. for demonstration purposes only - remove it!
-        var setupAlgolia = function() {
-
-            //Check to see if the user provided the api Key and app ID
-            if( $.trim(plugin.settings.appID) === '' || $.trim(plugin.settings.apiKey) === '' ) {
-                $.trim(plugin.settings.appID) === '' && console.log('appID is not present');
-                $.trim(plugin.settings.apiKey) === '' && console.log('apiKey is not present');
-            } else {
-                //If the user DID input these two required fields, then assign the ID/Key to the client
-                //and build helpers
-                plugin.settings.client = algoliasearch(plugin.settings.appID, plugin.settings.apiKey);
-
-                //console.log(plugin.settings);
-
-                buildHelpers();
-                //buildSearchResults();
-            }
-
-            // code goes here
+            try {
+                plugin.settings.client = algoliasearch(plugin.settings.appID, plugin.settings.apiKey); 
+            } catch(err) {
+                console.log(err.message);                
+            }            
+            
             if(plugin.settings.debug) {
 
                 $input = $('#q');
@@ -110,9 +76,15 @@
             search('init');
         }
 
-        var buildHelpers = function () {
+        // public methods
+        /*plugin._public_method = function() {
 
-            //console.log('buildHelpers()');
+            // code goes here
+
+        }*/
+
+        // private methods
+        var buildHelpers = function () {
 
             for(var a=0; a<plugin.settings.index.length; a++) {
                 try {
@@ -142,8 +114,6 @@
                     console.log(err.message);
                 }
             }
-
-            //console.log(plugin.settings.helpers);
         }
 
         var renderHits = function (data, theHelper, $container) {
