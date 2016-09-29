@@ -1,10 +1,17 @@
-// Justin's Fancy Schmancy Algolia Plugin 
+// Justin's Fancy Schmancy Algolia Plugin
 // Version: 1.0.0
 // Using - A boilerplate for jumpstarting jQuery plugins development by Stefan Gabos version 1.1, May 14th, 2011
 
 
 
-//@TODO: There is a bug with how the results list works. Currently it outputs on the results per search. This will get super unoptimized. 
+//@TODO: There is a bug with how the results list works. Currently it outputs on the results per search. This will get super unoptimized.
+//@TODO: Will be solving how $results is built. Using the proper jquery
+//       method of attaching the plugin to dom elements, we can store the
+//       appropriate index and hit per page information in data-* attribs
+//       not only does this reflect angular/react style workflows
+//       it also eliminates the entire indices object that needs to be passed
+//       into the plugin.
+
 (function($) {
 
     // here we go!
@@ -21,21 +28,20 @@
             resultsId: '.hits',
             displaySpeed: 150,
             searchForm: '.search'
-        }        
+        }
 
-        // to avoid confusions, use "plugin" to reference the 
+        // to avoid confusions, use "plugin" to reference the
         // current instance of the object
         var plugin = this;
 
         // this will hold the merged default, and user-provided options
         // plugin's properties will be available through this object like:
         // plugin.settings.propertyName from inside the plugin or
-        // element.data('FancyAlgolia').settings.propertyName from outside the plugin, 
+        // element.data('FancyAlgolia').settings.propertyName from outside the plugin,
         // where "element" is the element the plugin is attached to;
         plugin.settings = {
             appID: '',
-            apiKey: '',   
-            indexes: {},
+            apiKey: '',
             resultsId: '',
             debug: '',
             smoothLoad: '',
@@ -48,12 +54,13 @@
 
         // the "constructor" method that gets called when the object is created
         plugin.init = function() {
-            // the plugin's final properties are the merged default and 
+            // the plugin's final properties are the merged default and
             // user-provided options (if any)
             plugin.settings = $.extend({}, defaults, options);
 
-            //Check for required appID and apiKey options. 
-            setupAlgolia(); 
+            plugin.settings.index = element.attr('data-index');
+            //Check for required appID and apiKey options.
+            setupAlgolia();
             //setupFormListeners();
             // init the rest of the plugin features below
 
@@ -62,7 +69,7 @@
         // public methods
         // these methods can be called like:
         // plugin.methodName(arg1, arg2, ... argn) from inside the plugin or
-        // element.data('FancyAlgolia').publicMethod(arg1, arg2, ... argn) from outside 
+        // element.data('FancyAlgolia').publicMethod(arg1, arg2, ... argn) from outside
         // the plugin, where "element" is the element the plugin is attached to;
 
         // a public method. for demonstration purposes only - remove it!
@@ -79,17 +86,17 @@
         // a private method. for demonstration purposes only - remove it!
         var setupAlgolia = function() {
 
-            //Check to see if the user provided the api Key and app ID            
+            //Check to see if the user provided the api Key and app ID
             if( $.trim(plugin.settings.appID) === '' || $.trim(plugin.settings.apiKey) === '' ) {
                 $.trim(plugin.settings.appID) === '' && console.log('appID is not present');
                 $.trim(plugin.settings.apiKey) === '' && console.log('apiKey is not present');
             } else {
-                //If the user DID input these two required fields, then assign the ID/Key to the client 
+                //If the user DID input these two required fields, then assign the ID/Key to the client
                 //and build helpers
                 plugin.settings.client = algoliasearch(plugin.settings.appID, plugin.settings.apiKey);
 
                 //console.log(plugin.settings);
-                
+
                 buildHelpers();
                 //buildSearchResults();
             }
@@ -100,13 +107,14 @@
                 $input = $('#q');
 
                 $input.bind('keyup paste', searchIndices);
-            }           
+            }
 
-            search('init');            
+            search('init');
         }
 
         var buildHelpers = function () {
-
+            console.log(plugin.settings.index);
+            /*
             for(var key in plugin.settings.indexes) {
 
                 //console.log(key);
@@ -130,7 +138,7 @@
                 if(plugin.settings.helpers[index].hittemplate) {
 
                     try {
-                        plugin.settings.helpers[index].helper.on('result', function (content) {     
+                        plugin.settings.helpers[index].helper.on('result', function (content) {
 
                             //console.log(content);
 
@@ -143,13 +151,14 @@
 
                 }
             }
+            */
         }
 
         var renderHits = function (data, theHelper, container) {
-        
+
             try {
 
-                //Where to display all resulting hits. 
+                //Where to display all resulting hits.
                 var $results = $element.find(plugin.settings.resultsId);
 
                 //console.log($results[0].parentElement);
@@ -176,16 +185,16 @@
 
                 if($counter.length && data.nbHits > 0) {
                     $counter.html('');
-                    $counter.html(data.nbHits);               
+                    $counter.html(data.nbHits);
                 } else {
                     $element.find('.error').html('');
                     $element.find('.error').html('<center>No <strong>' +  capitalizeFirstLetter(section) + ' Results </strong></strong>');
                 }
-                
+
             } catch (err) {
                 console.log(err.message);
             }
-            
+
 
         }
 
@@ -195,8 +204,8 @@
         var search = function (when) {
             switch(when) {
                 case 'init':
-                    //console.log('init'); 
-                    for(var index in plugin.settings.helpers) {                        
+                    //console.log('init');
+                    for(var index in plugin.settings.helpers) {
                         plugin.settings.helpers[index].helper.search();
                     }
                 break;
