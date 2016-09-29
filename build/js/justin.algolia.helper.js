@@ -2,16 +2,6 @@
 // Version: 1.0.0
 // Using - A boilerplate for jumpstarting jQuery plugins development by Stefan Gabos version 1.1, May 14th, 2011
 
-
-
-//@TODO: There is a bug with how the results list works. Currently it outputs on the results per search. This will get super unoptimized.
-//@TODO: Will be solving how $results is built. Using the proper jquery
-//       method of attaching the plugin to dom elements, we can store the
-//       appropriate index and hit per page information in data-* attribs
-//       not only does this reflect angular/react style workflows
-//       it also eliminates the entire indices object that needs to be passed
-//       into the plugin.
-
 (function($) {
 
     // here we go!
@@ -116,7 +106,7 @@
 
         var buildHelpers = function () {
 
-            console.log('buildHelpers()');
+            //console.log('buildHelpers()');
 
             for(var a=0; a<plugin.settings.index.length; a++) {
                 try {
@@ -126,6 +116,13 @@
 
                     plugin.settings.helpers[plugin.settings.index[a]] = {
                         helper: asHelper,
+                        
+                        //@TODO: There's a new bug here with the $container assignment. 
+                        //For the example I was building, I wanted to use a single hittemplate that 
+                        //matched multiple indices. In order to fix the triple assignment and execution of 
+                        //the searches, I tied everything to the $element variable. 
+                        //Need to assign the hittemplate via data-hittemplate attribute. make them match via ID
+                        //so that the template <script id="whatever"/> is equal to <div id="element" data-hittemplate="whatever"
                         hittemplate: Hogan.compile($('#' + plugin.settings.id +'-template').text())
                     }
 
@@ -138,43 +135,42 @@
                 try {
 
                     plugin.settings.helpers[key].helper.on('result', function (content) {
-                        console.log(content);
+                        
+                        renderHits(content, plugin.settings.helpers[key], $element.find(plugin.settings.resultsId));
                     });
 
                 } catch (err) {
                     console.log(err.message);
                 }
             }
+
+            //console.log(plugin.settings.helpers);
         }
 
-        var renderHits = function (data, theHelper, container) {
+        var renderHits = function (data, theHelper, $container) {
 
             try {
-
-                //Where to display all resulting hits.
-                var $results = $element.find(plugin.settings.resultsId);
-
-                //console.log($results[0].parentElement);
-
                 //If HTML entities exist, this should convert them to the proper text for the browser to render
                 var html = $('<textarea/>').html(theHelper.hittemplate.render(data)).text();
 
+                if(plugin.settings.id == 'nist') { console.log(html) };
+
                 if(plugin.settings.smoothLoad) {
 
-                    $results.animate({opacity: 0}, plugin.settings.displaySpeed, function () {
+                    $container.animate({opacity: 0}, plugin.settings.displaySpeed, function () {
                         $(this).html('');
 
-                        $results.append(html);
+                         $container.append(html);
 
                         $(this).animate({opacity: 1}, plugin.settings.displaySpeed);
                     });
 
                 } else {
-                    $results.html('');
-                    $results.append(html);
+                     $container.html('');
+                     $container.append(html);
                 }
 
-                var $counter = $element.find('.count');
+                /*var $counter = $element.find('.count');
 
                 if($counter.length && data.nbHits > 0) {
                     $counter.html('');
@@ -182,7 +178,7 @@
                 } else {
                     $element.find('.error').html('');
                     $element.find('.error').html('<center>No <strong>' +  capitalizeFirstLetter(section) + ' Results </strong></strong>');
-                }
+                }*/
 
             } catch (err) {
                 console.log(err.message);
