@@ -42,7 +42,7 @@
           <div class="container">
 
             <div class="col-xs-12 col-sm-4 offset-sm-4">
-              <form>
+              <form class="FancyAlgoliaSearch">
                 <div class="form-group">
                   <label for="q"><strong>Seach:</strong></label>
                   <input type="text" class="form-control" id="q">
@@ -121,31 +121,6 @@
     </script>
 
     <script>
-        var dojTemplate = Hogan.compile($('#doj-template').text());
-
-        //console.log(dojTemplate);
-        /*
-        var indices = {
-          doj: {
-              indexName: 'dj_emails',
-              hitsPerPage: 6,
-              //container: $('#classes'),
-              hittemplate: dojTemplate
-          },
-          ds: {
-              indexName: 'ds_emails',
-              hitsPerPage: 6,
-              //container: $('#classes'),
-              hittemplate: dojTemplate
-          },
-          nist: {
-              indexName: 'nist_emails',
-              hitsPerPage: 6,
-              //container: $('#classes'),
-              hittemplate: dojTemplate
-          }
-        };
-        */
 
         $('#doj, #ds, #nist').FancyAlgolia({
             appID: 'H6TUQ7E89O',

@@ -2,6 +2,11 @@
 // Version: 1.0.0
 // Using - A boilerplate for jumpstarting jQuery plugins development by Stefan Gabos version 1.1, May 14th, 2011
 
+//@TODO: now incorporating <form> functionality. 
+//       The "basic" version of this form will use a single input[type="text"].
+//       The "advanced" version of this will mimic instantsearch.js, utilizing an 
+//       .addWidget() function that will tie an input field to facets.
+  
 (function($) {
 
     // here we go!
@@ -17,7 +22,7 @@
             helpersFunctions: [],
             resultsId: '.hits',
             displaySpeed: 150,
-            searchForm: '.search'
+            searchForm: $('.FancyAlgoliaSearch')
         }
 
         // to avoid confusions, use "plugin" to reference the
