@@ -58,20 +58,21 @@
             plugin.settings.hitsPerPage = Number($element.attr('data-hitsPerPage'));
             plugin.settings.hittemplate = $('#' + $element.attr('data-hittemplate'));
 
-            //setupFormListeners();
             // init the rest of the plugin features below
             try {
                 plugin.settings.client = algoliasearch(plugin.settings.appID, plugin.settings.apiKey); 
             } catch(err) {
-                console.log(err.message);                
+                console.log(err.message);
+                console.log('invalid apiKey or appID');
             }            
             
             if(plugin.settings.debug) {
-
                 $input = $('#q');
 
                 $input.bind('keyup paste', searchIndices);
             }
+
+            buildHelpers();
 
             search('init');
         }
