@@ -51,6 +51,7 @@
             plugin.settings.id = $element.attr('id');
             plugin.settings.index = $element.attr('data-index').split(',');
             plugin.settings.hitsPerPage = Number($element.attr('data-hitsPerPage'));
+            plugin.settings.hittemplate = $('#' + $element.attr('data-hittemplate'));
             //Check for required appID and apiKey options.
             setupAlgolia();
             //setupFormListeners();
@@ -65,11 +66,11 @@
         // the plugin, where "element" is the element the plugin is attached to;
 
         // a public method. for demonstration purposes only - remove it!
-        plugin.foo_public_method = function() {
+        /*plugin._public_method = function() {
 
             // code goes here
 
-        }
+        }*/
 
         // private methods
         // these methods can be called only from inside the plugin like:
@@ -116,14 +117,7 @@
 
                     plugin.settings.helpers[plugin.settings.index[a]] = {
                         helper: asHelper,
-                        
-                        //@TODO: There's a new bug here with the $container assignment. 
-                        //For the example I was building, I wanted to use a single hittemplate that 
-                        //matched multiple indices. In order to fix the triple assignment and execution of 
-                        //the searches, I tied everything to the $element variable. 
-                        //Need to assign the hittemplate via data-hittemplate attribute. make them match via ID
-                        //so that the template <script id="whatever"/> is equal to <div id="element" data-hittemplate="whatever"
-                        hittemplate: Hogan.compile($('#' + plugin.settings.id +'-template').text())
+                        hittemplate: Hogan.compile(plugin.settings.hittemplate.text())
                     }
 
                 } catch (err) {
@@ -152,8 +146,6 @@
             try {
                 //If HTML entities exist, this should convert them to the proper text for the browser to render
                 var html = $('<textarea/>').html(theHelper.hittemplate.render(data)).text();
-
-                if(plugin.settings.id == 'nist') { console.log(html) };
 
                 if(plugin.settings.smoothLoad) {
 
