@@ -58,7 +58,9 @@
             // user-provided options (if any)
             plugin.settings = $.extend({}, defaults, options);
 
-            plugin.settings.index = element.attr('data-index');
+            plugin.settings.id = $element.attr('id');
+            plugin.settings.index = $element.attr('data-index').split(',');
+            plugin.settings.hitsPerPage = Number($element.attr('data-hitsPerPage'));
             //Check for required appID and apiKey options.
             setupAlgolia();
             //setupFormListeners();
@@ -113,45 +115,36 @@
         }
 
         var buildHelpers = function () {
-            console.log(plugin.settings.index);
-            /*
-            for(var key in plugin.settings.indexes) {
 
-                //console.log(key);
+            console.log('buildHelpers()');
 
-                var tmp_helper = algoliasearchHelper(plugin.settings.client, plugin.settings.indexes[key].indexName, {
-                    hitsPerPage: plugin.settings.indexes[key].hitsPerPage
-                });
+            for(var a=0; a<plugin.settings.index.length; a++) {
+                try {
+                    var asHelper = algoliasearchHelper(plugin.settings.client, plugin.settings.index[a], {
+                        hitsPerPage: plugin.settings.hitsPerPage
+                    })
 
-                //console.log(plugin.settings.indexes[key].hittemplate);
-
-                plugin.settings.helpers[key] = {
-                    helper: tmp_helper,
-                    hittemplate : plugin.settings.indexes[key].hittemplate
-                }
-
-                //console.log(plugin.settings.helpers);
-            }
-
-            for (var index in plugin.settings.helpers) {
-
-                if(plugin.settings.helpers[index].hittemplate) {
-
-                    try {
-                        plugin.settings.helpers[index].helper.on('result', function (content) {
-
-                            //console.log(content);
-
-                            renderHits(content, plugin.settings.helpers[index], index);
-
-                        });
-                    } catch (err) {
-                        console.log(err.message);
+                    plugin.settings.helpers[plugin.settings.index[a]] = {
+                        helper: asHelper,
+                        hittemplate: Hogan.compile($('#' + plugin.settings.id +'-template').text())
                     }
 
+                } catch (err) {
+                    console.log(err.message);
                 }
             }
-            */
+
+            for(var key in plugin.settings.helpers) {
+                try {
+
+                    plugin.settings.helpers[key].helper.on('result', function (content) {
+                        console.log(content);
+                    });
+
+                } catch (err) {
+                    console.log(err.message);
+                }
+            }
         }
 
         var renderHits = function (data, theHelper, container) {
