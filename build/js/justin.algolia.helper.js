@@ -6,7 +6,7 @@
 //       The "basic" version of this form will use a single input[type="text"].
 //       The "advanced" version of this will mimic instantsearch.js, utilizing an 
 //       .addWidget() function that will tie an input field to facets.
-  
+
 (function($) {
 
     // here we go!
@@ -167,16 +167,6 @@
                      $container.append(html);
                 }
 
-                /*var $counter = $element.find('.count');
-
-                if($counter.length && data.nbHits > 0) {
-                    $counter.html('');
-                    $counter.html(data.nbHits);
-                } else {
-                    $element.find('.error').html('');
-                    $element.find('.error').html('<center>No <strong>' +  capitalizeFirstLetter(section) + ' Results </strong></strong>');
-                }*/
-
             } catch (err) {
                 console.log(err.message);
             }
@@ -198,7 +188,6 @@
 
                 default:
                     //console.log('default');
-                    //console.log(query);
                     for(var index in plugin.settings.helpers) {
                         plugin.settings.helpers[index].helper.setQuery(query).search();
                     }
