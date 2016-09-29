@@ -144,6 +144,7 @@
 
         }
 
+        //@TODO: Cleanup how these are stored. Consider storing in plugin.settings
         var query = '';
         var $input;
 
